@@ -1,0 +1,35 @@
+name: Upload to S3
+on:
+  # main ブランチに pus された時に実行する
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # 実行環境は最新の Ubuntu 環境
+    runs-on: ubuntu-latest
+    name: Build & Deploy
+    steps:
+      # GitHub Actions の公式のアクション。リポジトリのコードをワークフロー内でチェックアウト（クローン）する。
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        # GitHub Actions の公式のアクション。Node.js のバージョンをインストールする。
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - name: Deploy to S3
+        run: |
+
+          # コマンドの詳細をログに出力
+          set -x
+          # - `./`：現在のディレクトリの内容をS3バケットに同期。
+          # - `-delete`：S3上でローカルに存在しないファイルを削除。
+          # - `-exclude`：特定のファイルやディレクトリを同期対象から除外。
+          # - `-region`：S3バケットのリージョンを指定。
+          aws s3 sync ./ s3://[バケット名] --delete --exclude ".git/*" --exclude ".github/*" --region ap-northeast-1
+
+        # 環境変数の設定(GitHub の Secrets)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
