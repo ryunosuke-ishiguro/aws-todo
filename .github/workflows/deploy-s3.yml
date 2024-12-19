@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build & Deploy
     steps:
-      # GitHub Actions の公式のアクション。リポジトリのコードをワークフロー内でチェックアウト（クローン）する。
       - uses: actions/checkout@v3
       - name: Set up Node.js
         uses: actions/setup-node@v3
